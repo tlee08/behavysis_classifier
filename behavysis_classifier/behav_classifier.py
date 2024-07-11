@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 BEHAV_MODELS_SUBDIR = "behav_models"
 
 GENERIC_BEHAV_LABELS = ["nil", "behav"]
-
+from behav_classifier.data_models.behav_classifier_configs import BehavClassifierConfigs
 
 class BehavClassifier:
     """
@@ -69,7 +69,7 @@ class BehavClassifier:
         # Storing model directory path
         self.model_dir = os.path.abspath(model_dir)
         self.clf = None
-        # Trying to read in configs json. Making a new one if it doesn't exist
+        # Trying to read configs file. Making a new one if it doesn't exist
         try:
             self.configs
             logging.info("Reading existing model configs")
@@ -120,23 +120,12 @@ class BehavClassifier:
         """
         # Getting model directory
         model_dir = os.path.join(root_dir, behaviour_name)
+        # Checking if model directory already exists
+        assert not os.path.exists(model_dir), f"Model already exists: {model_dir}\n use `load` method instead."
         # Making new BehavClassifier instance
         inst = cls(model_dir)
         # Updating configs with project data
         configs = inst.configs
-        configs.behaviour_name = behaviour_name
-        inst.configs = configs
-        # Returning model
-        return inst
-
-    def create_from_model(self, root_dir: str, behaviour_name: str) -> BehavClassifier:
-        """
-        Creating a new BehavClassifier model in the given directory
-        """
-        # Making new BehavClassifier instance
-        inst = self.create_new_model(root_dir, behaviour_name)
-        # Using current instance's configs (but using given behaviour_name)
-        configs = self.configs
         configs.behaviour_name = behaviour_name
         inst.configs = configs
         # Returning model
@@ -151,9 +140,11 @@ class BehavClassifier:
         """
         Reads the model from the expected model file.
         """
-        if not os.path.isdir(model_dir):
-            raise FileNotFoundError(f"The model does not exist: {model_dir}")
+        # Checking that the configs file exists and is valid
+        # will throw Error if not
+        BehavClassifierConfigs.read_json(os.path.join(model_dir, "configs.json"))
         return cls(model_dir)
+
 
     #################################################
     #            GETTER AND SETTERS
