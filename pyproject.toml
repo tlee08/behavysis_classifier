@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "behavysis_pipeline"
+name = "behavysis_classifier"
 version = "0.1.12"
-description = "An animal behaviour processing and analysis package"
+description = "Behaviour classifier for the behavysis suite"
 authors = ["BowenLab"]
 license = "LGPL-3.0-or-later"
 readme = "README.md"
-homepage = "https://tlee08.github.io/behavysis_pipeline"
-repository = "https://github.com/tlee08/behavysis_pipeline"
-documentation = "https://tlee08.github.io/behavysis_pipeline"
-packages = [{ include = "behavysis_pipeline" }]
+homepage = "https://tlee08.github.io/behavysis_classifier"
+repository = "https://tlee08.github.io/behavysis_classifier"
+documentation = "https://tlee08.github.io/behavysis_classifier"
+packages = [{ include = "behavysis_classifier" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -32,8 +32,8 @@ url = "https://download.pytorch.org/whl/cu121"
 priority = "explicit"
 
 [tool.poetry.scripts]
-behavysis_make_classifier = "behavysis_pipeline.scripts.make_classifier:main"
-behavysis_classifier_gui = "behavysis_pipeline.scripts.classifier_gui:run_script"
+behavysis_make_classifier = "behavysis_classifier.scripts.make_classifier:main"
+behavysis_classifier_gui = "behavysis_classifier.scripts.classifier_gui:run_script"
 
 [build-system]
 requires = ["poetry-core"]
