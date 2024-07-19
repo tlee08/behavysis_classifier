@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "behavysis_classifier"
-version = "0.1.12"
+version = "0.1.13"
 description = "Behaviour classifier for the behavysis suite"
 authors = ["BowenLab"]
 license = "LGPL-3.0-or-later"
