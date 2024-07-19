@@ -15,9 +15,12 @@ python = "^3.10"
 scikit-learn = "^1.4.2"
 imbalanced-learn = "^0.12.2"
 behavysis_core = "^0.1.3"
-torch = {version = "^2.3.1", source = "torch"}
-torchvision = {version = "^0.18.1", source = "torch"}
-torchaudio = {version = "^2.3.1", source = "torch"}
+torch = "^2.3.1"
+# torch = {version = "^2.3.1", source = "torch"}
+torchvision = "^0.18.1"
+# torchvision = {version = "^0.18.1", source = "torch"}
+torchaudio = "^2.3.1"
+# torchaudio = {version = "^2.3.1", source = "torch"}
 streamlit = "^1.36.0"
 
 [tool.poetry.group.dev.dependencies]
