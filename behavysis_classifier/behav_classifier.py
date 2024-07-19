@@ -15,15 +15,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from behavysis_core.constants import (
-    BehavCN,
-    BehavColumns,
-    Folders,
-)
-from behavysis_core.data_models.pydantic_base_model import PydanticBaseModel
-from behavysis_core.mixins.behav_mixin import BehavMixin
-from behavysis_core.mixins.df_io_mixin import DFIOMixin
-from pydantic import ConfigDict
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,
@@ -32,9 +23,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 
-from behavysis_pipeline.behav_classifier.base_torch_model import BaseTorchModel
-
-from .clf_templates import CLF_TEMPLATES
+from behavysis_classifier.clf_models.base_torch_model import BaseTorchModel
+from behavysis_classifier.clf_models.clf_templates import CLF_TEMPLATES
+from behavysis_classifier.data_models.behav_classifier_configs import (
+    BehavClassifierConfigs,
+)
+from behavysis_core.constants import (
+    BehavCN,
+    BehavColumns,
+    Folders,
+)
+from behavysis_core.mixins.behav_mixin import BehavMixin
+from behavysis_core.mixins.df_io_mixin import DFIOMixin
 
 if TYPE_CHECKING:
     from behavysis_pipeline.pipeline.project import Project
@@ -42,7 +42,7 @@ if TYPE_CHECKING:
 BEHAV_MODELS_SUBDIR = "behav_models"
 
 GENERIC_BEHAV_LABELS = ["nil", "behav"]
-from behav_classifier.data_models.behav_classifier_configs import BehavClassifierConfigs
+
 
 class BehavClassifier:
     """
@@ -121,7 +121,9 @@ class BehavClassifier:
         # Getting model directory
         model_dir = os.path.join(root_dir, behaviour_name)
         # Checking if model directory already exists
-        assert not os.path.exists(model_dir), f"Model already exists: {model_dir}\n use `load` method instead."
+        assert not os.path.exists(
+            model_dir
+        ), f"Model already exists: {model_dir}\n use `load` method instead."
         # Making new BehavClassifier instance
         inst = cls(model_dir)
         # Updating configs with project data
@@ -144,7 +146,6 @@ class BehavClassifier:
         # will throw Error if not
         BehavClassifierConfigs.read_json(os.path.join(model_dir, "configs.json"))
         return cls(model_dir)
-
 
     #################################################
     #            GETTER AND SETTERS
