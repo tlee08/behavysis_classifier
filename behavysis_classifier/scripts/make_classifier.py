@@ -21,7 +21,7 @@ def main(root_dir: str = ".", overwrite: bool = False) -> None:
         # Saving the template to the file
         IOMixin.save_template(
             i,
-            "behavysis_pipeline",
+            "behavysis_classifier",
             "templates",
             dst_fp,
         )
