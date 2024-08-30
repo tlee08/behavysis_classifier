@@ -8,7 +8,7 @@ import json
 import logging
 import os
 import shutil
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Callable
 
 import joblib
 import matplotlib.pyplot as plt
@@ -515,7 +515,7 @@ class BehavClassifier:
         self,
         x: np.ndarray,
         batch_size: int,
-        index: Optional[np.ndarray] = None,
+        index: None | np.ndarray = None,
     ) -> pd.DataFrame:
         """
         Making predictions using the given model and preprocessed features.
@@ -555,7 +555,7 @@ class BehavClassifier:
     # COMPREHENSIVE EVALUATION FUNCTIONS
     #################################################
 
-    def clf_eval_save_history(self, history: pd.DataFrame, name: Optional[str] = ""):
+    def clf_eval_save_history(self, history: pd.DataFrame, name: None | str = ""):
         # Saving history df
         DFIOMixin.write_feather(
             history, os.path.join(self.eval_dir, f"{name}_history.feather")
@@ -569,8 +569,8 @@ class BehavClassifier:
         self,
         x: np.ndarray,
         y: np.ndarray,
-        index: Optional[np.ndarray] = None,
-        name: Optional[str] = "",
+        index: None | np.ndarray = None,
+        name: None | str = "",
     ) -> tuple[pd.DataFrame, dict, plt.Figure, plt.Figure, plt.Figure]:
         """
         Evaluates the classifier performance on the given x and y data.

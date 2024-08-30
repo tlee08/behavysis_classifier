@@ -1,5 +1,3 @@
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 import torch
@@ -23,8 +21,8 @@ class BaseTorchModel(nn.Module):
         self.nfeatures = nfeatures
         self.window_frames = window_frames
         # Initialising the criterion and optimizer attributes
-        self.criterion = None
-        self.optimizer = None
+        self.criterion = nn.Module()
+        self.optimizer = optim.Adam(self.parameters())
         # Setting the device (GPU or CPU)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -142,7 +140,7 @@ class BaseTorchModel(nn.Module):
         self,
         x: np.ndarray,
         batch_size: int,
-        index: Optional[np.ndarray] = None,
+        index: None | np.ndarray = None,
     ) -> np.ndarray:
         # Making data loaders
         loader = self.predict_loader(x, index, batch_size=batch_size)
@@ -189,7 +187,7 @@ class BaseTorchModel(nn.Module):
         self,
         x: np.ndarray,
         y: np.ndarray,
-        index: Optional[np.ndarray] = None,
+        index: None | np.ndarray = None,
         batch_size: int = 1,
     ) -> DataLoader:
         ds = MemoizedTimeSeriesDataset(
@@ -201,7 +199,7 @@ class BaseTorchModel(nn.Module):
     def predict_loader(
         self,
         x: np.ndarray,
-        index: Optional[np.ndarray] = None,
+        index: None | np.ndarray = None,
         batch_size: int = 1,
     ) -> DataLoader:
         ds = TimeSeriesDataset(x=x, index=index, window_frames=self.window_frames)
@@ -218,9 +216,9 @@ class TimeSeriesDataset(Dataset):
     def __init__(
         self,
         x: np.ndarray,
-        y: Optional[np.ndarray] = None,
-        index: Optional[np.ndarray] = None,
-        window_frames: Optional[int] = 5,
+        y: None | np.ndarray = None,
+        index: None | np.ndarray = None,
+        window_frames: None | int = 5,
     ):
         # Checking that the indexes are equal
         if y is not None:
