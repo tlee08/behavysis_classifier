@@ -33,7 +33,7 @@ from behavysis_core.constants import (
     BehavColumns,
     Folders,
 )
-from behavysis_core.mixins.behav_mixin import BehavMixin
+from behavysis_core.mixins.behav_df_mixin import BehavDfMixin
 from behavysis_core.mixins.df_io_mixin import DFIOMixin
 
 if TYPE_CHECKING:
@@ -545,7 +545,7 @@ class BehavClassifier:
         # Making predictions from probabilities (and pcutoff)
         y_preds = (y_probs > self.configs.pcutoff).astype(int)
         # Making df
-        pred_df = BehavMixin.init_df(index)
+        pred_df = BehavDfMixin.init_df(index)
         pred_df[(self.configs.behaviour_name, BehavColumns.PROB.value)] = y_probs
         pred_df[(self.configs.behaviour_name, BehavColumns.PRED.value)] = y_preds
         # Returning predicted behavs
