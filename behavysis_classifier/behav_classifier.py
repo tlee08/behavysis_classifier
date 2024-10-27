@@ -28,13 +28,9 @@ from behavysis_classifier.clf_models.clf_templates import CLF_TEMPLATES
 from behavysis_classifier.data_models.behav_classifier_configs import (
     BehavClassifierConfigs,
 )
-from behavysis_core.constants import (
-    BehavCN,
-    BehavColumns,
-    Folders,
-)
-from behavysis_core.mixins.behav_df_mixin import BehavDfMixin
-from behavysis_core.mixins.df_io_mixin import DFIOMixin
+from behavysis_core.constants import Folders
+from behavysis_core.df_mixins.behav_df_mixin import BehavCN, BehavColumns, BehavDfMixin
+from behavysis_core.df_mixins.df_io_mixin import DFIOMixin
 
 if TYPE_CHECKING:
     from behavysis_pipeline.pipeline.project import Project
