@@ -1,6 +1,6 @@
 from pydantic import ConfigDict
 
-from behavysis_core.data_models.pydantic_base_model import PydanticBaseModel
+from behavysis_core.pydantic_models.pydantic_base_model import PydanticBaseModel
 
 
 class BehavClassifierConfigs(PydanticBaseModel):

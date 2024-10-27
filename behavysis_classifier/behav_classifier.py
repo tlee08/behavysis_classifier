@@ -25,12 +25,12 @@ from sklearn.preprocessing import MinMaxScaler
 
 from behavysis_classifier.clf_models.base_torch_model import BaseTorchModel
 from behavysis_classifier.clf_models.clf_templates import CLF_TEMPLATES
-from behavysis_classifier.data_models.behav_classifier_configs import (
+from behavysis_classifier.pydantic_models.behav_classifier_configs import (
     BehavClassifierConfigs,
 )
 from behavysis_core.constants import Folders
-from behavysis_core.df_mixins.behav_df_mixin import BehavCN, BehavColumns, BehavDfMixin
-from behavysis_core.df_mixins.df_io_mixin import DFIOMixin
+from behavysis_core.df_classes.behav_df import BehavColumns, BehavDf
+from behavysis_core.df_classes.df_mixin import DFMixin
 
 if TYPE_CHECKING:
     from behavysis_pipeline.pipeline.project import Project
@@ -262,7 +262,7 @@ class BehavClassifier:
     #################################################
 
     @staticmethod
-    def preproc_x_fit(x: np.ndarray, preproc_fp: str) -> None:
+    def preproc_x_fit(x: np.ndarray | pd.DataFrame, preproc_fp: str) -> None:
         """
         __summary__
         """
@@ -274,7 +274,7 @@ class BehavClassifier:
         joblib.dump(preproc_pipe, preproc_fp)
 
     @staticmethod
-    def preproc_x(x: np.ndarray, preproc_fp: str) -> np.ndarray:
+    def preproc_x(x: np.ndarray | pd.DataFrame, preproc_fp: str) -> np.ndarray:
         """
         The preprocessing steps are:
         - MinMax scaling (using previously fitted MinMaxScaler)
@@ -303,7 +303,7 @@ class BehavClassifier:
         """
         # Filtering out the prob and pred columns (in the `outcomes` level)
         cols_filter = np.isin(
-            y.columns.get_level_values(BehavCN.OUTCOMES.value),
+            y.columns.get_level_values(BehavDf.CN.OUTCOMES.value),
             [BehavColumns.PROB.value, BehavColumns.PRED.value],
             invert=True,
         )
@@ -431,9 +431,9 @@ class BehavClassifier:
             Features array in the format: `(samples, window, features)`
         """
         # Preprocessing x df
-        x = self.preproc_x(x, self.preproc_fp)
+        x_preproc = self.preproc_x(x, self.preproc_fp)
         # Returning x
-        return x
+        return x_preproc
 
     #################################################
     # PIPELINE FOR CLASSIFIER TRAINING AND INFERENCE
@@ -481,11 +481,11 @@ class BehavClassifier:
         # Saving index for later
         index = x.index
         # Preprocessing features
-        x = self.prepare_data(x)
+        x_preproc = self.prepare_data(x)
         # Loading the model
         self.clf_load()
         # Making predictions
-        y_eval = self.clf_predict(x, self.configs.batch_size)
+        y_eval = self.clf_predict(x_preproc, self.configs.batch_size)
         # Settings the index
         y_eval.index = index
         # Returning predictions
@@ -541,7 +541,7 @@ class BehavClassifier:
         # Making predictions from probabilities (and pcutoff)
         y_preds = (y_probs > self.configs.pcutoff).astype(int)
         # Making df
-        pred_df = BehavDfMixin.init_df(index)
+        pred_df = BehavDf.init_df(pd.Series(index))
         pred_df[(self.configs.behaviour_name, BehavColumns.PROB.value)] = y_probs
         pred_df[(self.configs.behaviour_name, BehavColumns.PRED.value)] = y_preds
         # Returning predicted behavs
@@ -553,7 +553,7 @@ class BehavClassifier:
 
     def clf_eval_save_history(self, history: pd.DataFrame, name: None | str = ""):
         # Saving history df
-        DFIOMixin.write_feather(
+        DFMixin.write_feather(
             history, os.path.join(self.eval_dir, f"{name}_history.feather")
         )
         # Making and saving history figure
@@ -601,7 +601,7 @@ class BehavClassifier:
         # Logistic curve
         logc_fig = self.eval_logc(y_true, y_prob)
         # Saving data and figures
-        DFIOMixin.write_feather(
+        DFMixin.write_feather(
             y_eval, os.path.join(self.eval_dir, f"{name}_eval.feather")
         )
         with open(os.path.join(self.eval_dir, f"{name}_report.json"), "w") as f:
