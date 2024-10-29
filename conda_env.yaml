@@ -9,5 +9,7 @@ dependencies:
   - python
   - pip
   - ipykernel
+  - ffmpeg
+  - hdf5
   - pip:
       - behavysis_classifier
